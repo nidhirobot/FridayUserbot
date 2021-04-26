@@ -282,63 +282,42 @@ async def set_my_pic(client, message):
     if not Config.PM_PSW:
         await ms_.edit("`Pm Permit Is Disabled. Whats The Use Of Adding A Pm Pic?`")
         return
-    if not message.reply_to_message:
-        await ms_.edit("`Reply To Image To Set As Your Pm Permit Pic.`")
+    if await is_media(message.reply_to_message):
+        await ms_.edit("`Reply To Media To Set As Your Pm Permit Media.`")
         return
-    if not (message.reply_to_message.photo or message.reply_to_message.sticker):
-        await ms_.edit("`Reply To Image To Set As Your Pm Permit Pic.`")
-        return
-    if message.reply_to_message.sticker:
-        m_d = await convert_to_image(message, client)
-    else:
-        m_d = await message.reply_to_message.download()
-    try:
-        media_url = upload_file(m_d)
-    except exceptions.TelegraphException as exc:
-        await ms_.edit(f"`Unable To Upload Media To Telegraph! \nTraceBack : {exc}`")
-        os.remove(m_d)
-        return
-    media_url = f"https://telegra.ph/{media_url[0]}"
-    await add_pm_thumb(media_url)
-    await ms_.edit("`Sucessfully Set This Image As Pm Permit Image!`")
-    os.remove(m_d)
+    copied_msg = await msg.copy(int(Config.LOG_GRP))
+    await add_pm_thumb(copied_msg.message_id)
+    await ms_.edit("`Sucessfully Set This Image As Pm Permit Media!`")
+
+async def is_media(message):
+    if not (message.photo or message.video or message.document or message.audio or message.sticker or message.animation or message.voice or message.video_note):
+        return False
+    return True
 
 
 @listen(filters.incoming & filters.private & ~filters.edited & ~filters.me)
 async def pmPermit(client, message):
     if not Config.PM_PSW:
-        
         return
-    if not message.from_user:
-        
+    if not message.from_user:   
         return
     if await is_user_approved(int(message.chat.id)):
-        
         return
     if message.from_user.id in devs_id:
         await approve_user(int(message.chat.id))
-        
         return
     user_ = await client.get_users(int(message.chat.id))
-    if user_.is_contact:
-        
-        return
     if user_.is_bot:
-        
         return
-    if user_.is_verified:
-        
+    if user_.is_verified:       
         return
     if user_.id == (client.me).id:
-        
         return
     if user_.is_scam:
         await message.reply_text("`Scammer Aren't Welcome To My Masters PM!`")
         await client.block_user(user_.id)
-        
         return
     if user_.is_support:
-        
         return
     text = await get_pm_text()
     log = LogIt(message)
@@ -357,17 +336,26 @@ async def pmPermit(client, message):
             PM_WARNS.pop(int(message.chat.id))
         blockeda = f"**#Blocked_PMPERMIT** \n**User :** `{user_.id}` \n**Reason :** `Spam Limit Reached.`"
         await log.log_msg(client, blockeda)
-        
         return
     warnings_got = f"{int(PM_WARNS[int(message.chat.id)]) + 1}/{int(pm_s_)}"
     user_firstname = message.from_user.first_name
+    user_mention = message.from_user.mention
     me_f = client.me.first_name
-    holy = await message.reply_photo(
-        capt,
+    de_pic = "https://telegra.ph//file/beec6cccce4908591a598.jpg"
+    if capt:
+        holy = await client.copy_message(
+                from_chat_id=int(Config.LOG_GRP),
+                message_id=capt,
+                chat_id=int(message.chat.id),
+                caption=text.format(user_firstname=user_firstname, warns=warnings_got, boss_firstname=me_f, mention=user_mention),
+                reply_to_message_id=message.message_id
+        )
+    else:
+        holy = await message.reply_photo(
+        de_pic,
         caption=text.format(
-            user_firstname=user_firstname, warns=warnings_got, boss_firstname=me_f
-        ),
-    )
+            user_firstname=user_firstname, warns=warnings_got, boss_firstname=me_f, mention=user_mention),
+    )       
     PM_WARNS[int(message.chat.id)] += 1
     if int(message.chat.id) in OLD_MSG:
         await OLD_MSG[int(message.chat.id)].delete()
