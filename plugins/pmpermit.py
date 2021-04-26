@@ -282,7 +282,7 @@ async def set_my_pic(client, message):
     if not Config.PM_PSW:
         await ms_.edit("`Pm Permit Is Disabled. Whats The Use Of Adding A Pm Pic?`")
         return
-    if await is_media(message.reply_to_message):
+    if not await is_media(message.reply_to_message):
         await ms_.edit("`Reply To Media To Set As Your Pm Permit Media.`")
         return
     copied_msg = await msg.copy(int(Config.LOG_GRP))
@@ -345,7 +345,7 @@ async def pmPermit(client, message):
     if capt:
         holy = await client.copy_message(
                 from_chat_id=int(Config.LOG_GRP),
-                message_id=capt,
+                message_id=int(capt),
                 chat_id=int(message.chat.id),
                 caption=text.format(user_firstname=user_firstname, warns=warnings_got, boss_firstname=me_f, mention=user_mention),
                 reply_to_message_id=message.message_id
