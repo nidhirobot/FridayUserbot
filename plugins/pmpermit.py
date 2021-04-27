@@ -10,7 +10,6 @@ import asyncio
 import os
 
 from pyrogram import filters
-from telegraph import Telegraph, exceptions, upload_file
 
 from database.bot_settings_db import (
     add_pm_text,
@@ -32,14 +31,6 @@ OLD_MSG = {}
 
 from plugins import devs_id
 
-try:
-    telegraph = Telegraph()
-    r = telegraph.create_account(short_name="FridayUserBot.")
-    auth_url = r["auth_url"]
-except:
-    telegraph = None
-    r = None
-    auth_url = None
 
 
 @friday_on_cmd(
@@ -285,7 +276,13 @@ async def set_my_pic(client, message):
     if not await is_media(message.reply_to_message):
         await ms_.edit("`Reply To Media To Set As Your Pm Permit Media.`")
         return
-    copied_msg = await message.reply_to_message.copy(int(Config.LOG_GRP), caption="")
+    if message.reply_to_message.sticker:
+        file_ = await convert_to_image(message, client)
+        copied_msg = await client.send_photo(Config.LOG_GRP, file_)
+        if os.path.exists(file_):
+            os.remove(file_)
+    else:
+        copied_msg = await message.reply_to_message.copy(int(Config.LOG_GRP), caption="")
     await add_pm_thumb(copied_msg.message_id)
     await ms_.edit("`Sucessfully Set This Image As Pm Permit Media!`")
 
