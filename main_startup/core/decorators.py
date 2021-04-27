@@ -69,6 +69,7 @@ def friday_on_cmd(
 
     def decorator(func):
         async def wrapper(client, message):
+            message.client = client
             chat_type = message.chat.type
             if only_if_admin and not await is_admin_or_owner(
                 message, (client.me).id
