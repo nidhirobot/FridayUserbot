@@ -35,6 +35,8 @@ async def yt_vid(client, message):
     await pablo.edit(f"`Getting {input_str} From Youtube Servers. Please Wait.`")
     search = SearchVideos(str(input_str), offset=1, mode="dict", max_results=1)
     rt = search.result()
+    if rt is None:
+        return await pablo.edit("`No Result Found.`")
     result_s = rt["search_result"]
     url = result_s[0]["link"]
     vid_title = result_s[0]["title"]
@@ -162,13 +164,9 @@ async def ytmusic(client, message):
         return
     search = SearchVideos(str(input_str), offset=1, mode="dict", max_results=1)
     rt = search.result()
-    try:
-        result_s = rt["search_result"]
-    except:
-        await pablo.edit(
-            f"Song Not Found With Name {input_str}, Please Try Giving Some Other Name."
-        )
-        return
+    if rt is None:
+        return await pablo.edit("`No Result Found.`")
+    result_s = rt["search_result"]
     url = result_s[0]["link"]
     result_s[0]["duration"]
     vid_title = result_s[0]["title"]
