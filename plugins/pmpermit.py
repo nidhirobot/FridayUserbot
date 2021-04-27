@@ -311,8 +311,6 @@ async def pmPermit(client, message):
         return
     if user_.is_verified:       
         return
-    if user_.id == (client.me).id:
-        return
     if user_.is_scam:
         await message.reply_text("`Scammer Aren't Welcome To My Masters PM!`")
         await client.block_user(user_.id)
@@ -324,7 +322,7 @@ async def pmPermit(client, message):
     capt = await get_thumb()
     pm_s_ = await get_pm_spam_limit()
     if int(message.chat.id) not in PM_WARNS:
-        PM_WARNS[int(message.chat.id)] = 1
+        PM_WARNS[int(message.chat.id)] = 0
     else:
         PM_WARNS[int(message.chat.id)] += 1
     if PM_WARNS[int(message.chat.id)] >= int(pm_s_):
@@ -339,7 +337,7 @@ async def pmPermit(client, message):
         blockeda = f"**#Blocked_PMPERMIT** \n**User :** `{user_.id}` \n**Reason :** `Spam Limit Reached.`"
         await log.log_msg(client, blockeda)
         return
-    warnings_got = f"{int(PM_WARNS[int(message.chat.id)])}/{int(pm_s_)}"
+    warnings_got = f"{int(PM_WARNS[int(message.chat.id)]) + 1}/{int(pm_s_)}"
     user_firstname = message.from_user.first_name
     user_mention = message.from_user.mention
     me_f = client.me.first_name
