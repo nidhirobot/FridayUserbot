@@ -63,6 +63,13 @@ async def edit_or_reply(message, text, parse_mode="md"):
         return await message.edit(text, parse_mode=parse_mode)
     if not message.from_user:
         return await message.edit(text, parse_mode=parse_mode)
+    if message.client.is_bot:
+        if message.reply_to_message:
+            kk = message.reply_to_message.message_id
+            return await message.reply(
+                text, reply_to_message_id=kk, parse_mode=parse_mode
+            )
+        return await message.reply(text, parse_mode=parse_mode)
     if message.from_user.id in Config.AFS:
         if message.reply_to_message:
             kk = message.reply_to_message.message_id
