@@ -37,6 +37,7 @@ async def paste(client, message):
             os.remove(file)
         elif message.reply_to_message.text:
             message_s = message.reply_to_message.text
+    text_len = len(message_s.split("\n"))
     key = (
         requests.post("https://nekobin.com/api/documents", json={"content": message_s})
         .json()
@@ -45,5 +46,5 @@ async def paste(client, message):
     )
     url = f"https://nekobin.com/{key}"
     raw = f"https://nekobin.com/raw/{key}"
-    reply_text = f"Pasted Text To [NekoBin]({url}) And For Raw [Click Here]({raw})"
-    await pablo.edit(reply_text)
+    reply_text = f"**Text Pasted To NekoBin** \n⟳ [Normal]({url}) \n⟳ [Raw]({raw})"
+    await pablo.edit(reply_text, disable_web_page_preview=True)
