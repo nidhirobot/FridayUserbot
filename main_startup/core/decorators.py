@@ -49,7 +49,6 @@ def friday_on_cmd(
     propagate_to_next_handler: bool = True,
     file_name: str = None,
     is_official: bool = True,
-    add_to_assistant: bool = False,
     cmd_help: dict = {"help": "No One One Gonna Help You", "example": "{ch}what"},
 ):
     """- Main Decorator To Register Commands. -"""
@@ -124,7 +123,7 @@ def friday_on_cmd(
                         await client.send_message(Config.LOG_GRP, text)
                     except BaseException:
                         logging.error(text)
-        add_handler(filterm, wrapper, cmd, add_to_assistant)
+        add_handler(filterm, wrapper, cmd)
         return wrapper
 
     return decorator
@@ -204,27 +203,12 @@ def add_help_menu(
             ] += f"\n\n**Command :** `{Config.COMMAND_HANDLER}{cmd}` \n**Help :** `{cmd_help}` \n**Example :** `{cmd_helpz}`"
             
 
-async def _sudo_and_owner_check(f, client, message):
-    use_ = [Friday.me.id]
-    if Friday2:
-        use_.append[Friday2.me.id]
-    if Friday3:
-        use_.append[Friday3.me.id]
-    if Friday4:
-        use_.append[Friday4.me.id]
-    if message.from_user.id in use_:
-        return bool(True)
-    else:
-        return bool(False)
-    
-_sudo_and_owner_check = filters.create(func=_sudo_and_owner_check, name="_sudo_and_owner_check")
-    
-def add_handler(filter_s, func_, cmd, add_to_assistant):
+def add_handler(filter_s, func_, cmd):
     d_c_l = Config.DISABLED_SUDO_CMD_S
     if d_c_l:
         d_c_l = d_c_l.split(" ")
         d_c_l = list(d_c_l)
-        if "dev" in d_c_l.keys():
+        if "dev" in d_c_l:
             d_c_l.extend(['eval', 'bash', 'install']) 
         if any(item in list(d_c_l) for item in list(cmd)): 
             filter_s = (filters.me & filters.command(cmd, Config.COMMAND_HANDLER) & ~filters.via_bot & ~filters.forwarded)
@@ -234,8 +218,4 @@ def add_handler(filter_s, func_, cmd, add_to_assistant):
     if Friday3:
         Friday3.add_handler(MessageHandler(func_, filters=filter_s), group=0)
     if Friday4:
-        Friday4.add_handler(MessageHandler(func_, filters=filter_s), group=0)    
-    if bot:
-        if add_to_assistant:
-            my_fi = (~filters.forwarded & filters.incoming & _sudo_and_owner_check & filters.command(cmd))
-            bot.add_handler(MessageHandler(func_, filters=my_fi), group=0)   
+        Friday4.add_handler(MessageHandler(func_, filters=filter_s), group=0)      
