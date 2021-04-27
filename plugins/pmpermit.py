@@ -278,6 +278,8 @@ async def set_my_pic(client, message):
         return
     if message.reply_to_message.sticker:
         file_ = await convert_to_image(message, client)
+        if not os.path.exists(file_):
+            return await ms_.edit("`Unable To Convert To Image.`")
         copied_msg = await client.send_photo(Config.LOG_GRP, file_)
         if os.path.exists(file_):
             os.remove(file_)
@@ -290,7 +292,6 @@ async def is_media(message):
     if not (message.photo or message.video or message.document or message.audio or message.sticker or message.animation or message.voice or message.video_note):
         return False
     return True
-
 
 @listen(filters.incoming & filters.private & ~filters.edited & ~filters.me)
 async def pmPermit(client, message):
@@ -321,7 +322,9 @@ async def pmPermit(client, message):
     capt = await get_thumb()
     pm_s_ = await get_pm_spam_limit()
     if int(message.chat.id) not in PM_WARNS:
-        PM_WARNS[int(message.chat.id)] = 0
+        PM_WARNS[int(message.chat.id)] = 1
+    else:
+        PM_WARNS[int(message.chat.id)] += 1
     elif PM_WARNS[int(message.chat.id)] >= int(pm_s_):
         await message.reply_text(
             f"`Thats It! I Gave You {int(pm_s_)} Warning. Now Fuck Off. Blocked And Reported!`"
@@ -334,7 +337,7 @@ async def pmPermit(client, message):
         blockeda = f"**#Blocked_PMPERMIT** \n**User :** `{user_.id}` \n**Reason :** `Spam Limit Reached.`"
         await log.log_msg(client, blockeda)
         return
-    warnings_got = f"{int(PM_WARNS[int(message.chat.id)]) + 1}/{int(pm_s_)}"
+    warnings_got = f"{int(PM_WARNS[int(message.chat.id)])}/{int(pm_s_)}"
     user_firstname = message.from_user.first_name
     user_mention = message.from_user.mention
     me_f = client.me.first_name
@@ -352,9 +355,7 @@ async def pmPermit(client, message):
         de_pic,
         caption=text.format(
             user_firstname=user_firstname, warns=warnings_got, boss_firstname=me_f, mention=user_mention),
-    )       
-    PM_WARNS[int(message.chat.id)] += 1
+    )      
     if int(message.chat.id) in OLD_MSG:
         await OLD_MSG[int(message.chat.id)].delete()
     OLD_MSG[int(message.chat.id)] = holy
-    
