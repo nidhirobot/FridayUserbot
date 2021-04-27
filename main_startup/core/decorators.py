@@ -30,6 +30,7 @@ from main_startup import (
     Friday2,
     Friday3,
     Friday4,
+    bot
 )
 from main_startup.config_var import Config
 from main_startup.helper_func.basic_helpers import is_admin_or_owner
@@ -203,7 +204,13 @@ def add_help_menu(
             
 
 async def _sudo_and_owner_check(f, client, message):
-    use_ = await get_all_pros()
+    use_ = [Friday.me.id]
+    if Friday2:
+        use_.append[Friday2.me.id]
+    if Friday3:
+        use_.append[Friday3.me.id]
+    if Friday4:
+        use_.append[Friday4.me.id]
     if message.from_user.id in use_:
         return bool(True)
     else:
@@ -227,6 +234,7 @@ def add_handler(filter_s, func_, cmd, add_to_assistant):
         Friday3.add_handler(MessageHandler(func_, filters=filter_s), group=0)
     if Friday4:
         Friday4.add_handler(MessageHandler(func_, filters=filter_s), group=0)    
-    if add_to_assistant:
-        my_fi = (~filters.forwarded & filters.incoming & _sudo_and_owner_check & filters.command(cmd))
-        bot.add_handler(MessageHandler(func_, filters=my_fi), group=0)   
+    if bot:
+        if add_to_assistant:
+            my_fi = (~filters.forwarded & filters.incoming & _sudo_and_owner_check & filters.command(cmd))
+            bot.add_handler(MessageHandler(func_, filters=my_fi), group=0)   
