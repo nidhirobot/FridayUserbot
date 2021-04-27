@@ -49,7 +49,7 @@ def friday_on_cmd(
     propagate_to_next_handler: bool = True,
     file_name: str = None,
     is_official: bool = True,
-    add_to_assistant: bool = True,
+    add_to_assistant: bool = False,
     cmd_help: dict = {"help": "No One One Gonna Help You", "example": "{ch}what"},
 ):
     """- Main Decorator To Register Commands. -"""
