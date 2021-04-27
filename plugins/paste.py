@@ -46,5 +46,5 @@ async def paste(client, message):
     )
     url = f"https://nekobin.com/{key}"
     raw = f"https://nekobin.com/raw/{key}"
-    reply_text = f"**Text Pasted To NekoBin** \n⟳ [Normal]({url})     ⟳ [Raw]({raw})"
+    reply_text = f"**Text Pasted To NekoBin** \n⟳ [Normal]({url})     ⟳ [Raw]({raw})     \n⟳ `{text_len} Lines Of Code.`"
     await pablo.edit(reply_text, disable_web_page_preview=True)
