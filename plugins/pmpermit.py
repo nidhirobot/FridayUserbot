@@ -304,8 +304,10 @@ async def pmPermit(client, message):
     if message.from_user.id in devs_id:
         await approve_user(int(message.chat.id))
         return
-    user_ = await client.get_users(int(message.chat.id))
+    user_ = message.from_user
     if user_.is_bot:
+        return
+    if user_.is_self:
         return
     if user_.is_verified:       
         return
