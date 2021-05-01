@@ -341,7 +341,7 @@ async def pmPermit(client, message):
     user_firstname = message.from_user.first_name
     user_mention = message.from_user.mention
     me_f = client.me.first_name
-    de_pic = "https://telegra.ph//file/beec6cccce4908591a598.jpg"
+    de_pic = "logo.jpg"
     if capt:
         holy = await client.copy_message(
                 from_chat_id=int(Config.LOG_GRP),
