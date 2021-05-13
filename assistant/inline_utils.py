@@ -67,7 +67,6 @@ async def owo(client, inline_query):
         if not " " in inline_query.query.lower():
             return
         sgname = string_given.split(" ", maxsplit=1)[1]
-        print(sgname)
         PabloEscobar = (
             f"https://an1.com/tags/MOD/?story={sgname}&do=search&subaction=search"
         )
@@ -91,7 +90,6 @@ async def owo(client, inline_query):
             mydis0 = soupe.find_all("a", {"class": "get-product"})
             Lol9 = mydis0[0]
             lemk = "https://an1.com" + Lol9["href"]
-
             results.append(
                 InlineQueryResultPhoto(
                     photo_url=imme,
@@ -284,7 +282,7 @@ async def yt_dl_video(client, cb):
     if not os.path.exists(file_name):
         await cb.edit_message_text(file_name)
         return
-    await cb.edit_message_text(f"`Downloaded : {ytdl_data['title']} | Now Uploading....`")
+    await cb.edit_message_text(f"`Downloaded : {name} | Now Uploading....`")
     file_ = InputMediaVideo(file_name, thumb=downloaded_thumb, supports_streaming=True, duration=dur)
     await cb.edit_message_media(file_)
     if os.path.exists(file_name):
