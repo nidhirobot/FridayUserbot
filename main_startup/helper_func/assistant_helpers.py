@@ -97,7 +97,10 @@ def download_yt(url, as_video=False):
     yt_id = ytdl_data['id']
     name = ytdl_data['title']
     dur = ytdl_data["duration"]
+    u_date = ytdl_data["upload_date"]
+    uploader = ytdl_data["uploader"]
+    views = ytdl_data["view_count"]
     thumb_url = f"https://img.youtube.com/vi/{yt_id}/hqdefault.jpg"
     downloaded_thumb = wget.download(thumb_url)
     file_name = f"{ytdl_data['id']}.mp4" if as_video else f"{ytdl_data['id']}.mp3"
-    return file_name, downloaded_thumb, name, dur
+    return file_name, downloaded_thumb, name, dur, u_date, uploader, views
