@@ -580,27 +580,3 @@ async def give_old_page(client, cb):
         current_page_number - 1, cmd_list, "helpme", is_official=is_official
     )
     await cb.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(buttons))
-
-
-@bot.on_callback_query(filters.regex(pattern="apk_(.*)"))
-@cb_wrapper
-async def ytv_(client, cb):
-    lemk = cb.matches[0].group(1)
-    rr = requests.get(lemk)
-    soup = BeautifulSoup(rr.content, "html5lib")
-    script = soup.find("script", type="text/javascript")
-    leek = re.search(r'href=[\'"]?([^\'" >]+)', script.text).group()
-    dl_link = leek[5:]
-    file_ = await _dl(lemk)
-    file = InputMediaDocument(file_)
-    await cb.edit_message_media(
-        file,
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("Download Link", url=lemk)],
-                [InlineKeyboardButton("Direct Download Link", url=dl_link)],
-            ]
-        )
-    )
-    if os.path.exists(file_):
-        os.remove(file_)
