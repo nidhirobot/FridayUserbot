@@ -87,7 +87,7 @@ async def set_custom_pm_texts(client, message):
     if not ptext:
         await message.edit("`Give Number Input!`")
         return
-    if not ptext.isdigit():
+    if not ptext.isnumeric():
         await message.edit("`Pm Limit Should Be In Numbers From 3-20`")
         return
     if int(ptext) < 3:

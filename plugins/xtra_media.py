@@ -224,7 +224,7 @@ async def img_search(client, message):
         await pablo.edit("`Give Text For Image Search!`")
         return
     if "|" in query:
-        lim = query.split("|")[1] if (query.split("|")[1]).isdigit() else 5
+        lim = query.split("|")[1] if (query.split("|")[1]).isnumeric() else 5
     else:
         lim = 5
     response = googleimagesdownload()

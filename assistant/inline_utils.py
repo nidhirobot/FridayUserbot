@@ -44,6 +44,9 @@ from main_startup.helper_func.basic_helpers import (
     inline_wrapper,
     paginate_help,
 )
+import os
+from main_startup.helper_func.assistant_helpers import _dl, download_yt
+from pyrogram.types import InputMediaDocument, InputMediaVideo
 
 
 
@@ -59,7 +62,7 @@ BRANCH_ = Config.U_BRANCH
 @inline_wrapper
 async def owo(client, inline_query):
     string_given = inline_query.query.lower()
-    if "modapk" in inline_query.query.lower():
+    if inline_query.query.lower().startswith("modapk"):
         if not " " in inline_query.query.lower():
             return
         string_given = inline_query.query.lower()
@@ -107,7 +110,7 @@ async def owo(client, inline_query):
                 )
             )
         await client.answer_inline_query(inline_query.id, cache_time=0, results=results)
-    elif "not4u" in string_given:
+    elif string_given.lower().startswith("not4u"):
         if not ";" in string_given:
             return
         ok = string_given.split(" ", maxsplit=1)[1]
@@ -146,7 +149,52 @@ async def owo(client, inline_query):
             )
         ]
         await client.answer_inline_query(inline_query.id, cache_time=0, results=ok_s)
-    elif "whisper" in string_given:
+    elif string_given.lower().startswith("yt"):
+        results = []
+        try:
+            input = string_given.split(" ", maxsplit=1)[1]
+        except:
+            return
+        search = SearchVideos(str(input), offset=1, mode="dict", max_results=25)
+        rt = search.result()
+        result_s = rt["search_result"]
+        for i in result_s:
+            url = i["link"]
+            vid_title = i["title"]
+            yt_id = i["id"]
+            uploade_r = i["channel"]
+            views = i["views"]
+            thumb = f"https://img.youtube.com/vi/{yt_id}/hqdefault.jpg"
+            capt = f"""
+            **Video Title :** `{vid_title}`
+            **Link :** `{url}`
+            **Uploader :** `{uploade_r}`
+            **Views :** `{views}`
+            **
+            """
+            results.append(
+                InlineQueryResultPhoto(
+                    photo_url=thumb,
+                    title=vid_title,
+                    caption=capt,
+                    reply_markup=InlineKeyboardMarkup(
+                        [
+                            [
+                                InlineKeyboardButton(
+                                    text="Download - Audio",
+                                    callback_data=f"ytdl_{url}_audio"
+                                ),
+                                InlineKeyboardButton(
+                                    text="Download - Video",
+                                    callback_data=f"ytdl_{url}_video"
+                                )
+                            ]
+                        ]
+                    ),
+                )
+            )
+        await client.answer_inline_query(inline_query.id, cache_time=0, results=results)
+    elif string_given.lower().startswith("whisper"):
         if not ";" in string_given:
             return
         ok = string_given.split(" ", maxsplit=1)[1]
@@ -185,7 +233,7 @@ async def owo(client, inline_query):
             )
         ]
         await client.answer_inline_query(inline_query.id, cache_time=0, results=ok_s)
-    elif "help" in string_given:
+    elif string_given.lower().startswith("help"):
         total_ = len(CMD_LIST)
         bttn = [
             [
@@ -226,6 +274,22 @@ async def owo(client, inline_query):
             ],
         )
 
+@bot.on_callback_query(filters.regex(pattern="ytdl_(.*)_(video|audio)"))
+async def yt_dl_video(client, cb):
+    url = cb.matches[0].group(1)
+    audio_or_video = cb.matches[0].group(2)
+    if audio_or_video == "video":
+        file_name, downloaded_thumb, name, dur = download_yt(url, as_video=True)
+    else:
+        file_name, downloaded_thumb, name, dur = download_yt(url, as_video=False)
+    if not os.path.exists(file_name):
+        await cb.edit_message_text(file_name)
+        return
+    await cb.edit_message_text(f"`Downloaded : {ytdl_data['title']} | Now Uploading....`")
+    file_ = InputMediaVideo(file_name, thumb=downloaded_thumb, supports_streaming=True, duration=dur)
+    await cb.edit_message_media(file_)
+    if os.path.exists(file_name):
+        os.remove(file_name)
 
 @bot.on_callback_query(filters.regex(pattern="sc_(.*)"))
 async def no_horny(client, cb):
@@ -565,7 +629,10 @@ async def ytv_(client, cb):
     script = soup.find("script", type="text/javascript")
     leek = re.search(r'href=[\'"]?([^\'" >]+)', script.text).group()
     dl_link = leek[5:]
-    await cb.edit_message_reply_markup(
+    file_ = await _dl(lemk)
+    file = InputMediaDocument(file_)
+    await cb.edit_message_media(
+        file,
         reply_markup=InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton("Download Link", url=lemk)],
@@ -573,3 +640,5 @@ async def ytv_(client, cb):
             ]
         )
     )
+    if os.path.exists(file_):
+        os.remove(file_)

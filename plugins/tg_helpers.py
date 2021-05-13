@@ -236,7 +236,7 @@ async def pur_ge_me(client, message):
     if not to_purge:
         nice_p.edit("`Give No Of Message To Purge :/`")
         return
-    if not to_purge.isdigit():
+    if not to_purge.isnumeric():
         nice_p.edit("`Give No Of Message To Purge :/`")
         return
     async for msg in client.search_messages(
