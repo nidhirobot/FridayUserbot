@@ -1,4 +1,4 @@
-git+https://github.com/Starkgangs/pyrogram
+git+https://github.com/pyrogram/pyrogram
 filesplit
 wget>=3.2
 CairoSVG>=2.5.2
