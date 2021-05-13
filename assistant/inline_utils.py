@@ -231,9 +231,9 @@ async def yt_dl_video(client, cb):
     url = cb.matches[0].group(1)
     audio_or_video = cb.matches[0].group(2)
     if audio_or_video == "video":
-        file_name, downloaded_thumb, name, dur = download_yt(url, as_video=True)
+        file_name, downloaded_thumb, name, dur, u_date, uploader, views = await download_yt(url, as_video=True)
     else:
-        file_name, downloaded_thumb, name, dur, u_date, uploader, views = download_yt(url, as_video=False)
+        file_name, downloaded_thumb, name, dur, u_date, uploader, views = await download_yt(url, as_video=False)
     if not os.path.exists(file_name):
         await cb.edit_message_text(file_name)
         return
