@@ -11,7 +11,7 @@ import re
 import string
 from random import choice
 import sys
-import datetime
+#import datetime
 from datetime import datetime
 from os import environ, execle, path, remove
 import platform
@@ -239,6 +239,7 @@ async def yt_dl_video(client, cb):
         await cb.edit_message_text(file_name)
         return
     await cb.edit_message_text(f"`Downloaded : {name} | Now Uploading....`")
+    import datetime
     f_size = humanbytes(os.stat(file_name).st_size)
     caption = f"""
 **Title :** `{name}`
