@@ -11,6 +11,7 @@ import re
 import string
 from random import choice
 import sys
+import datetime
 from datetime import datetime
 from os import environ, execle, path, remove
 import platform
@@ -47,7 +48,7 @@ from main_startup.helper_func.basic_helpers import (
 )
 import os
 from main_startup.helper_func.assistant_helpers import _dl, download_yt
-from pyrogram.types import InputMediaDocument, InputMediaVideo
+from pyrogram.types import InputMediaDocument, InputMediaVideo, InputMediaAudio
 
 
 
@@ -244,8 +245,7 @@ async def yt_dl_video(client, cb):
 **Uploader :** `{uploader}`
 **Views :** `{views}`
 **Link :** `{url}`
-**Duration :** `{dur}`
-**Upload Date :** `{u_date}`
+**Duration :** `{datetime.timedelta(seconds=dur)}`
 **File Size :** `{f_size}`
 """
     if audio_or_video == "video":
