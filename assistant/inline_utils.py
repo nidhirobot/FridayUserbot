@@ -63,52 +63,7 @@ BRANCH_ = Config.U_BRANCH
 @inline_wrapper
 async def owo(client, inline_query):
     string_given = inline_query.query.lower()
-    if string_given.startswith("modapk"):
-        if not " " in inline_query.query.lower():
-            return
-        sgname = string_given.split(" ", maxsplit=1)[1]
-        PabloEscobar = (
-            f"https://an1.com/tags/MOD/?story={sgname}&do=search&subaction=search"
-        )
-        r = requests.get(PabloEscobar)
-        results = []
-        soup = BeautifulSoup(r.content, "html5lib")
-        mydivs = soup.find_all("div", {"class": "search-results"})
-        Pop = soup.find_all("div", {"class": "title"})
-        cnte = len(mydivs)
-        for cnt in range(cnte):
-            sucker = mydivs[cnt]
-            pH9 = sucker.find("a").contents[0]
-            file_name = pH9
-            pH = sucker.findAll("img")
-            imme = pH[0]["src"]
-            Pablo = Pop[0].a["href"]
-            ro = requests.get(Pablo)
-            soupe = BeautifulSoup(ro.content, "html5lib")
-            myopo = soupe.find_all("div", {"class": "item"})
-            capt = f"**{file_name}** \n** {myopo[0].text}**\n**{myopo[1].text}**\n**{myopo[2].text}**\n**{myopo[3].text}**"
-            mydis0 = soupe.find_all("a", {"class": "get-product"})
-            Lol9 = mydis0[0]
-            lemk = "https://an1.com" + Lol9["href"]
-            results.append(
-                InlineQueryResultPhoto(
-                    photo_url=imme,
-                    title=file_name,
-                    caption=capt,
-                    reply_markup=InlineKeyboardMarkup(
-                        [
-                            [
-                                InlineKeyboardButton(
-                                    text="<<! Download Link!>>",
-                                    callback_data=f"apk_{lemk}",
-                                ),
-                            ]
-                        ]
-                    ),
-                )
-            )
-        await client.answer_inline_query(inline_query.id, cache_time=0, results=results)
-    elif string_given.startswith("not4u"):
+    if string_given.startswith("not4u"):
         if not ";" in string_given:
             return
         ok = string_given.split(" ", maxsplit=1)[1]
@@ -153,7 +108,7 @@ async def owo(client, inline_query):
             input = string_given.split(" ", maxsplit=1)[1]
         except:
             return
-        search = SearchVideos(str(input), offset=1, mode="dict", max_results=25)
+        search = SearchVideos(str(input), offset=1, mode="dict", max_results=50)
         rt = search.result()
         result_s = rt["search_result"]
         for i in result_s:
@@ -278,12 +233,22 @@ async def yt_dl_video(client, cb):
     if audio_or_video == "video":
         file_name, downloaded_thumb, name, dur = download_yt(url, as_video=True)
     else:
-        file_name, downloaded_thumb, name, dur = download_yt(url, as_video=False)
+        file_name, downloaded_thumb, name, dur, u_date, uploader, views = download_yt(url, as_video=False)
     if not os.path.exists(file_name):
         await cb.edit_message_text(file_name)
         return
     await cb.edit_message_text(f"`Downloaded : {name} | Now Uploading....`")
-    file_ = InputMediaVideo(file_name, thumb=downloaded_thumb, supports_streaming=True, duration=dur)
+    f_size = humanbytes(os.stat(file_name).st_size)
+    caption = f"""
+**Title :** `{name}`
+**Uploader :** `{uploader}`
+**Views :** `{views}`
+**Link :** `{url}`
+**Duration :** `{dur}`
+**Upload Date :** `{u_date}`
+**File Size :** `{f_size}`
+"""
+    file_ = InputMediaVideo(file_name, thumb=downloaded_thumb, supports_streaming=True, duration=dur, caption=caption)
     await cb.edit_message_media(file_)
     if os.path.exists(file_name):
         os.remove(file_name)
