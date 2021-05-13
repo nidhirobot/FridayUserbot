@@ -37,6 +37,7 @@ from tinydb import Query, TinyDB
 from main_startup.core.startup_helpers import run_cmd
 from main_startup import CMD_LIST, XTRA_CMD_LIST, Friday, bot, friday_version
 from main_startup.config_var import Config
+from youtubesearchpython import SearchVideos
 from main_startup.helper_func.basic_helpers import (
     cb_wrapper,
     humanbytes,
@@ -62,10 +63,9 @@ BRANCH_ = Config.U_BRANCH
 @inline_wrapper
 async def owo(client, inline_query):
     string_given = inline_query.query.lower()
-    if inline_query.query.lower().startswith("modapk"):
+    if string_given.startswith("modapk"):
         if not " " in inline_query.query.lower():
             return
-        string_given = inline_query.query.lower()
         sgname = string_given.split(" ", maxsplit=1)[1]
         print(sgname)
         PabloEscobar = (
@@ -110,7 +110,7 @@ async def owo(client, inline_query):
                 )
             )
         await client.answer_inline_query(inline_query.id, cache_time=0, results=results)
-    elif string_given.lower().startswith("not4u"):
+    elif string_given.startswith("not4u"):
         if not ";" in string_given:
             return
         ok = string_given.split(" ", maxsplit=1)[1]
@@ -149,7 +149,7 @@ async def owo(client, inline_query):
             )
         ]
         await client.answer_inline_query(inline_query.id, cache_time=0, results=ok_s)
-    elif string_given.lower().startswith("yt"):
+    elif string_given.startswith("yt"):
         results = []
         try:
             input = string_given.split(" ", maxsplit=1)[1]
@@ -194,7 +194,7 @@ async def owo(client, inline_query):
                 )
             )
         await client.answer_inline_query(inline_query.id, cache_time=0, results=results)
-    elif string_given.lower().startswith("whisper"):
+    elif string_given.startswith("whisper"):
         if not ";" in string_given:
             return
         ok = string_given.split(" ", maxsplit=1)[1]
@@ -233,7 +233,7 @@ async def owo(client, inline_query):
             )
         ]
         await client.answer_inline_query(inline_query.id, cache_time=0, results=ok_s)
-    elif string_given.lower().startswith("help"):
+    elif string_given.startswith("help"):
         total_ = len(CMD_LIST)
         bttn = [
             [
