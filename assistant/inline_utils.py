@@ -248,7 +248,10 @@ async def yt_dl_video(client, cb):
 **Upload Date :** `{u_date}`
 **File Size :** `{f_size}`
 """
-    file_ = InputMediaVideo(file_name, thumb=downloaded_thumb, supports_streaming=True, duration=dur, caption=caption)
+    if audio_or_video == "video":
+        file_ = InputMediaVideo(file_name, thumb=downloaded_thumb, supports_streaming=True, duration=dur, caption=caption)
+    else:
+        file_ = InputMediaAudio(file_name, performer=uploader, title=name, thumb=downloaded_thumb, duration=dur, caption=caption)
     await cb.edit_message_media(file_)
     if os.path.exists(file_name):
         os.remove(file_name)
