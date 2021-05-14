@@ -14,8 +14,11 @@ default_text = """<b>Hello, {user_firstname}!
 This is A UserBot Of {boss_firstname}.</b>
 <i>My Master is Busy As For Now, You Can Wait For Sometime
 If He Needs To Talk To You, He Will Approve You!</i>
+
 <b><u>You Have {warns} Of Warns.</b></u>
 """
+
+default_thumb = "https://icon-icons.com/downloadimage.php?id=106660&root=1527/PNG/512/&file=shield_106660.png"
 
 
 async def add_pm_text(text=default_text):
