@@ -149,7 +149,7 @@ async def gbun_him(client, message):
     await gbun.edit(engine.get_string("GBAN_START"))
     for ujwal in chat_dict:
         try:
-            await client.kick_chat_member(ujwal, int(userz.id))
+            await client.ban_chat_member(ujwal, int(userz.id))
         except:
             failed += 1
     await gban_user(userz.id, reason)
